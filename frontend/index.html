@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student API Interface</title>
+</head>
+<body>
+    <h1>Student API Interface</h1>
+
+    <!-- Form to add a new student -->
+    <h2>Add a New Student</h2>
+    <form id="addStudentForm">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="button" onclick="addStudent()">Add Student</button>
+    </form>
+
+    <!-- List of students -->
+    <h2>All Students</h2>
+    <button onclick="getAllStudents()">Load Students</button>
+    <div id="studentsList"></div>
+
+    <script>
+        const apiUrl = 'http://localhost:8080/students';
+
+
+        // Function to get all students
+        function getAllStudents() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const studentsList = document.getElementById('studentsList');
+                    studentsList.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                });
+        }
+
+        // Function to add a new student
+        function addStudent() {
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, age, email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Student added successfully');
+                getAllStudents(); // Refresh the list
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
